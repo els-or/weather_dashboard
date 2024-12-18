@@ -120,7 +120,7 @@ class WeatherService {
     const weatherData = await this.fetchWeatherData(coordinates);
     const currentWeather = this.parseCurrentWeather(weatherData);
     const forecastArray = this.buildForecastArray(currentWeather, weatherData);
-    return { currentWeather, forecastArray };
+    return [ currentWeather, ...forecastArray ];
   }
 }
 
