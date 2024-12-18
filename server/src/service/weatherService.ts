@@ -9,13 +9,13 @@ interface Coordinates {
 
 //  DONE: Define a class for the Weather object
 class Weather {
-  private city: string; 
-  private date: Date;
-  private icon: string;
-  private iconDescription: string;
-  private tempF: number;
-  private windSpeed: number;
-  private humidity: number;
+  city: string; 
+  date: Date;
+  icon: string;
+  iconDescription: string;
+  tempF: number;
+  windSpeed: number;
+  humidity: number;
 
   constructor(city: string, date: Date, icon: string, iconDescription: string, tempF: number, windSpeed: number, humidity: number) {
     this.city = city;
