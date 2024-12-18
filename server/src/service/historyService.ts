@@ -27,7 +27,7 @@ class HistoryService {
     const cities = await this.read()
     return JSON.parse(cities)
   }
-  // TODO Define an addCity method that adds a city to the searchHistory.json file
+  // DONE: Define an addCity method that adds a city to the searchHistory.json file
   async addCity(city: string) {
     const cities = await this.getCities()
     const newCity = { name: city, id: uuidv4() }
