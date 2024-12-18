@@ -44,8 +44,10 @@ class WeatherService {
   //  DONE: Create fetchLocationData method
   private async fetchLocationData(query: string) {
     const response = await fetch(query);
-    const data = await response.json();
-    return data;
+    
+    const text = await response.text();
+    const data = JSON.parse(text);
+    return data[0];
   }
   //  DONE: Create destructureLocationData method
   private destructureLocationData(locationData: Coordinates): Coordinates {
@@ -56,14 +58,14 @@ class WeatherService {
   private buildGeocodeQuery(): string {
     const { baseURL, apiKey, cityName
     } = this;
-    return `${baseURL}/geocode/v1/json?q=${cityName}&key=${apiKey}`;
+    return `${baseURL}/geo/1.0/direct?q=${cityName}&appid=${apiKey}`;
   }
 
   //  DONE: Create buildWeatherQuery method
   private buildWeatherQuery(coordinates: Coordinates): string {
     const { baseURL, apiKey } = this;
     const { lat, lon } = coordinates;
-    return `${baseURL}/weather/1.0/report.json?product=current&latitude=${lat}&longitude=${lon}&units=imperial&apiKey=${apiKey}`;
+    return `${baseURL}/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&apiKey=${apiKey}`;
   }
   //  DONE: Create fetchAndDestructureLocationData method
   private async fetchAndDestructureLocationData() {
@@ -75,21 +77,20 @@ class WeatherService {
   private async fetchWeatherData(coordinates: Coordinates) {
     const query = this.buildWeatherQuery(coordinates);
     const response = await fetch(query);
-    const data = await response.json();
+    const text = await response.text();
+    const data = JSON.parse(text);
     return data;
   }
   //  DONE: Build parseCurrentWeather method
-  private parseCurrentWeather(response: any) {
-    const { data } = response;
-    const { weather } = data.list[0];
+  private parseCurrentWeather(weather: any) {
     const currentWeather = new Weather(
       weather.city.name, 
-      new Date(weather.dt_txt), 
-      weather.weather[0].icon, 
-      weather.weather[0].description,
-      weather.main.temp,
-      weather.wind.speed,
-      weather.main.humidity
+      new Date(weather.list[0].dt_txt), 
+      weather.list[0].weather[0].icon, 
+      weather.list[0].weather[0].description,
+      weather.list[0].main.temp,
+      weather.list[0].wind.speed,
+      weather.list[0].main.humidity
     );
     return currentWeather;
   }
@@ -97,17 +98,16 @@ class WeatherService {
   private buildForecastArray(currentWeather: Weather, weatherData: any) {
     let forecastArray: Weather[] = [];
     forecastArray.push(currentWeather);
-    const { list } = weatherData.list;
+    const { list } = weatherData;
     for (let i = 1; i < list.length; i++) {
-      const weather = list[i];
       const forecast = new Weather(
-        weather.city.name, 
-        new Date(weather.dt_txt), 
-        weather.weather[0].icon, 
-        weather.weather[0].description,
-        weather.main.temp,
-        weather.wind.speed,
-        weather.main.humidity
+        weatherData.city.name, 
+        new Date(list[i].dt_txt), 
+        list[i].weather[0].icon, 
+        list[i].weather[0].description,
+        list[i].main.temp,
+        list[i].wind.speed,
+        list[i].main.humidity
       );
       forecastArray.push(forecast);
     }
