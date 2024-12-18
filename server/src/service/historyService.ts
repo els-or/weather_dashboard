@@ -16,11 +16,11 @@ import { v4 as uuidv4 } from 'uuid'
 class HistoryService {
   // DONE: Define a read method that reads from the searchHistory.json file
   private async read() {
-    return await fs.readFile('../../db/searchHistory.json', 'utf-8')
+    return await fs.readFile('./db/searchHistory.json', 'utf-8')
   }
   // DONE: Define a write method that writes the updated cities array to the searchHistory.json file
   private async write(cities: City[]) {
-    await fs.writeFile('../../db/searchHistory.json', JSON.stringify(cities))
+    await fs.writeFile('./db/searchHistory.json', JSON.stringify(cities))
   }
   // DONE: Define a getCities method that reads the cities from the searchHistory.json file and returns them as an array of City objects
   async getCities() {
