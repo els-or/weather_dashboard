@@ -14,6 +14,9 @@ Simple dashboard that displays the 5 day forecast for any given city.
 Run `npm install`
 ## Usage
 Run `npm start`
+
+Live application at: [https://weather-dashboard-fpvc.onrender.com](https://weather-dashboard-fpvc.onrender.com)
+![](Screenshot.png)
 ## Contributors
 Rachel Sutton
 ## Tests
