@@ -31,7 +31,11 @@ class HistoryService {
   async addCity(city: string) {
     const cities = await this.getCities()
     const newCity = { name: city, id: uuidv4() }
-    cities.push(newCity)
+    // Done: Prevent duplicate entries in history
+    if (!cities.some((c: City) => c.name === city)) {
+      cities.push(newCity)
+    }
+      
     await this.write(cities)
   }
   // * BONUS DONE: Define a removeCity method that removes a city from the searchHistory.json file
