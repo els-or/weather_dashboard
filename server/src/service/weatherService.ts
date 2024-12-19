@@ -10,14 +10,14 @@ interface Coordinates {
 //  DONE: Define a class for the Weather object
 class Weather {
   city: string; 
-  date: Date;
+  date: string;
   icon: string;
   iconDescription: string;
   tempF: number;
   windSpeed: number;
   humidity: number;
 
-  constructor(city: string, date: Date, icon: string, iconDescription: string, tempF: number, windSpeed: number, humidity: number) {
+  constructor(city: string, date: string, icon: string, iconDescription: string, tempF: number, windSpeed: number, humidity: number) {
     this.city = city;
     this.date = date;
     this.icon = icon;
@@ -85,7 +85,7 @@ class WeatherService {
   private parseCurrentWeather(weather: any) {
     const currentWeather = new Weather(
       weather.city.name, 
-      new Date(weather.list[0].dt_txt), 
+      new Date(weather.list[0].dt_txt).toDateString(), // Done: Parse date to be human readable
       weather.list[0].weather[0].icon, 
       weather.list[0].weather[0].description,
       weather.list[0].main.temp,
@@ -98,11 +98,15 @@ class WeatherService {
   private buildForecastArray(currentWeather: Weather, weatherData: any) {
     let forecastArray: Weather[] = [];
     forecastArray.push(currentWeather);
-    const { list } = weatherData;
-    for (let i = 1; i < list.length; i++) {
+    let { list } = weatherData;
+    // TODO: Filter list for only one entry per day
+    list = list.filter((item: any) => {
+      return item.dt_txt.includes('12:00:00') && (new Date(item.dt_txt).toDateString() !== new Date().toDateString());
+    });
+    for (let i = 0; i < list.length; i++) {
       const forecast = new Weather(
         weatherData.city.name, 
-        new Date(list[i].dt_txt), 
+        new Date(list[i].dt_txt).toDateString(), // Done: Parse date to be human readable
         list[i].weather[0].icon, 
         list[i].weather[0].description,
         list[i].main.temp,
@@ -120,7 +124,7 @@ class WeatherService {
     const weatherData = await this.fetchWeatherData(coordinates);
     const currentWeather = this.parseCurrentWeather(weatherData);
     const forecastArray = this.buildForecastArray(currentWeather, weatherData);
-    return [ currentWeather, ...forecastArray ];
+    return forecastArray;
   }
 }
 
